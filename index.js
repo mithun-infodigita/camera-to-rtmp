@@ -4,9 +4,6 @@ import express from 'express'
 import {Server} from 'socket.io'
 import dotenv from 'dotenv'
 
-// const BrowserToRtmpServer = require('@api.video/browser-to-rtmp-server')
-// const {  Ffmpeg } = require("./utils/ffmpeg");
-
 import Ffmpeg from './utils/ffmpeg.js'
 
 const app = express();
@@ -30,7 +27,7 @@ io.on("connection", socket => {
 
 
     socket.on("start", (event, callback) => {
-        // console.log('start streaming')
+        console.log('start streaming')
         const options = {
             framerate: event.framerate,
             audioSampleRate: event.audioSampleRate,
@@ -48,15 +45,13 @@ io.on("connection", socket => {
     });
     socket.on("stop", (callback) => {
         console.log('stop streaming')
+        ffmpegProcess?.destroy();
     });
     socket.on("error", (event) => {
         console.log('error')
     });
 
     socket.on("binarystream", (binaryData, callback) => {
-        // console.log('streaming data')
-        // console.log(binaryData)
-
         ffmpegProcess?.sendData(binaryData)
         .then(() => callback())
         .catch((err) => {
@@ -69,14 +64,6 @@ io.on("connection", socket => {
 
 });
 
-// const browserToRtmpClient = new BrowserToRtmpServer(server, {
-//     cors: {
-//         origin: "*",
-//         methods: ["GET", "POST"],
-//         allowedHeaders: ["my-custom-header"],
-//         credentials: true
-//     }
-// });
 
 server.listen(port, () => {
   console.log(`Server is up on port ${port}!`);

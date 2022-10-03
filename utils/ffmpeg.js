@@ -15,22 +15,12 @@ export const FfmpegErrors = {
 
 
 export default class Ffmpeg extends EventEmitter {
-    // private options: FfmpegConfig;
-    // private logger: Logger;
-    // private process?: ChildProcessWithoutNullStreams;
-    // private status: 'RUNNING' | 'ENDED' | 'ENDING' | 'CREATED' = 'CREATED';
-    // private framesSent: number = 0;
-    // private lastFrameSentTime?: number;
-    // private lastOutput: string = "";
-
     constructor( options) {
       super();
       this.options = options;
       this.process = null
       this.status = null;
     }
-
-
 
   start() {
     this.process = spawn('ffmpeg', this.createOptions());
@@ -183,15 +173,22 @@ export default class Ffmpeg extends EventEmitter {
     //   '-f',
     //   'flv',
     //   this.options.rtmp,
-    "-framerate","30",
-                         "-video_size","1920x1080",
-                         "-i","/dev/video0",
-                         "-f","mpegts",
-                         "-codec:v","mpeg1video",
-                         "-s","1920x1080",
-                         "-b:v","3000k",
-                         "qscale:v","20",
-                         "-bf","0",
+    "-f",
+    "lavfi",
+    "-i",
+    "anullsrc",
+    "-i",
+    "-",
+    "-c:v",
+    "libx264",
+    "-preset",
+    "veryfast",
+    "-tune",
+    "zerolatency",
+    "-c:a",
+    "aac",
+    "-f",
+    "flv",
     this.options.rtmp,
     ];
 
